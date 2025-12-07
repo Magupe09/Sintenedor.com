@@ -1,36 +1,137 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🍕 SinTenedor.com
 
-## Getting Started
+> Plataforma de pedidos online para dark kitchen con automatización completa
 
-First, run the development server:
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![n8n](https://img.shields.io/badge/n8n-Automation-orange?style=flat-square)](https://n8n.io/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue?style=flat-square&logo=postgresql)](https://www.postgresql.org/)
+
+## 📋 Descripción
+
+**SinTenedor.com** es una aplicación web moderna para gestionar pedidos de una dark kitchen, diseñada para automatizar completamente el flujo de trabajo desde la recepción del pedido hasta la entrega al cliente.
+
+### ✨ Características principales
+
+- 🛒 **Recepción de pedidos online** - Interfaz intuitiva para clientes
+- 💾 **Gestión de base de datos** - Almacenamiento seguro con PostgreSQL/Supabase
+- 🔔 **Notificaciones automáticas** - Alertas a clientes, cocina y domiciliarios
+- 🤖 **Automatización con n8n** - Workflows inteligentes sin plataformas externas
+- 🌎 **Escalabilidad internacional** - Preparado para expansión a Perú y Chile
+
+## 🛠️ Stack Tecnológico
+
+### Frontend
+- **Next.js 14** (App Router)
+- React
+- CSS Modules
+
+### Backend
+- **Next.js API Routes** (`app/api`)
+- PostgreSQL / Supabase
+- Migrando desde Express
+
+### Automatización
+- **n8n** - Orquestación de workflows
+  - Webhooks para recepción de pedidos
+  - Integración con base de datos
+  - Notificaciones multicanal (Email, WhatsApp, Telegram)
+  - Tracking de domiciliarios
+
+## 🚀 Inicio Rápido
+
+### Prerrequisitos
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Node.js >= 18.x
+npm >= 9.x
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Instalación
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Clonar el repositorio
+git clone https://github.com/Magupe09/Sintenedor.com.git
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Navegar al directorio
+cd sintenedor
 
-## Learn More
+# Instalar dependencias
+npm install
 
-To learn more about Next.js, take a look at the following resources:
+# Ejecutar en modo desarrollo
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+La aplicación estará disponible en `http://localhost:3000`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📁 Estructura del Proyecto
 
-## Deploy on Vercel
+```
+sintenedor/
+├── app/                    # Next.js App Router
+│   ├── api/               # API Routes
+│   ├── pedidos/           # Módulo de pedidos
+│   └── ...
+├── .docs/                 # Documentación del proyecto
+│   └── project-objective.md
+├── public/                # Archivos estáticos
+└── package.json
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔧 Configuración
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Variables de Entorno
+
+Crear un archivo `.env.local` en la raíz del proyecto:
+
+```env
+# Base de datos
+DATABASE_URL=your_database_url
+
+# n8n Webhook
+N8N_WEBHOOK_URL=your_n8n_webhook_url
+
+# Otras configuraciones
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
+
+## 📖 Documentación
+
+Para más información sobre el proyecto, objetivos y metodología de trabajo, consulta:
+
+- [Objetivo del Proyecto](.docs/project-objective.md)
+
+## 🗺️ Roadmap
+
+- [x] Configuración inicial de Next.js
+- [x] Estructura de rutas con App Router
+- [ ] Integración con n8n Cloud
+- [ ] Conexión a base de datos PostgreSQL/Supabase
+- [ ] Sistema de notificaciones
+- [ ] Panel de administración
+- [ ] Expansión internacional (Perú, Chile)
+
+## 👨‍💻 Desarrollo
+
+Este proyecto está en desarrollo activo. Se sigue una metodología de trabajo paso a paso, priorizando el aprendizaje y la comprensión de cada componente.
+
+### Scripts Disponibles
+
+```bash
+npm run dev      # Servidor de desarrollo
+npm run build    # Build de producción
+npm run start    # Servidor de producción
+npm run lint     # Linter
+```
+
+## 📄 Licencia
+
+Este proyecto es privado y está en desarrollo.
+
+## 📧 Contacto
+
+Para más información sobre el proyecto, contacta al equipo de desarrollo.
+
+---
+
+**Hecho con ❤️ para revolucionar el delivery de comida**
