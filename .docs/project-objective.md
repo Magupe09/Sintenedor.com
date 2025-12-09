@@ -109,4 +109,6 @@ Con toda esta información, ayúdame a continuar **EXACTAMENTE donde me quedé:*
 
 ## 📝 Notas adicionales
 
-Este documento sirve como referencia base para todas las tareas futuras del proyecto. Cualquier decisión técnica o de arquitectura debe considerar los objetivos y el contexto aquí descritos.
+Este documento sirve como referencia base para todas las tareas futuras del proyecto. Cualquier decisión técnica o de arquitectura debe considerar los objetivos y el contexto aquí descritos. 
+POST:
+https://magupe94.app.n8n.cloud/webhook-test/4cf32a5e-ef7f-43d1-9485-e772b70e5d66
