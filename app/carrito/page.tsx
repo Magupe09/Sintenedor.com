@@ -21,44 +21,41 @@ export default function CartPage() {
         }).format(amount);
     };
 
-    const handleCheckout = async (e: React.FormEvent) => {
+    const handleCheckout = (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        const orderData = {
-            cliente: {
-                nombre: clientName,
-                telefono: clientPhone,
-            },
-            items: cart.map(item => ({
-                id: item.product.id,
-                nombre: item.product.name,
-                precio: item.product.price,
-                cantidad: item.quantity
-            })),
-            total: total
-        };
+        // 1. Construimos el mensaje de texto para WhatsApp
+        // Usamos \n para saltos de línea (que en la URL se convierten en %0A)
+        let message = `Hola *Sintenedor*, quiero hacer un pedido:\n\n`;
 
-        try {
-            const response = await fetch('/pedidos/new', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(orderData)
-            });
+        // Agregamos cada producto
+        cart.forEach(item => {
+            message += `🍕 ${item.quantity}x ${item.product.name} - ${formatPrice(item.product.price * item.quantity)}\n`;
+        });
 
-            if (response.ok) {
-                alert('¡Pedido enviado con éxito!');
-                clearCart();
+        // Agregamos el total y los datos del cliente
+        message += `\n💰 *Total: ${formatPrice(total)}*\n`;
+        message += `------------------\n`;
+        message += `👤 *Cliente:* ${clientName}\n`;
+        message += `📱 *Teléfono:* ${clientPhone}`;
 
-            } else {
-                alert('Hubo un error al enviar el pedido');
-            }
-        } catch (error) {
-            console.error(error);
-            alert('Error de conexión');
-        } finally {
-            setIsSubmitting(false);
-        }
+        // 2. Codificamos el mensaje para que sea válido en una URL
+        // encodeURIComponent convierte espacios en %20, saltos en %0A, etc.
+        const encodedMessage = encodeURIComponent(message);
+
+        // 3. Definimos el número de teléfono del negocio (pon tu número real aquí)
+        const phoneNumber = "573015347481"; // Reemplázalo con el tuyo (código pais + número)
+
+        // 4. Redirigimos al usuario a la API de WhatsApp
+        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+        // Abrimos en una nueva pestaña
+        window.open(whatsappUrl, '_blank');
+
+        // (Opcional) Limpiamos el carrito después de enviar
+        clearCart();
+        setIsSubmitting(false);
     };
 
     if (cart.length === 0) {
