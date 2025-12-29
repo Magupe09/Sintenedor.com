@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Bebas_Neue, Montserrat } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
+import { AuthProvider } from "@/context/AuthContext";
 import CartIcon from "@/components/CartIcon";
+import Navigation from "@/components/Navigation";
 
 const bebasNeue = Bebas_Neue({
   variable: "--font-urban-heading",
@@ -30,10 +32,13 @@ export default function RootLayout({
       <body
         className={`${bebasNeue.variable} ${montserrat.variable} antialiased bg-[#020202] text-[#FAFFFD]`}
       >
-        <CartProvider>
-          {children}
-          <CartIcon />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            {children}
+            <CartIcon />
+            <Navigation />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

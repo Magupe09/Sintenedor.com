@@ -13,14 +13,14 @@ export default function CartIcon() {
     // Determinamos si el carrito está "abierto" (si estamos en la página)
     const isOpen = pathname === '/carrito';
 
-    // Si el carrito está vacío, podemos decidir si mostrar el botón o no.
-    // Lo mostramos siempre para que el usuario pueda ir al carrito aunque esté vacío.
-    // if (totalItems === 0 && !isOpen) return null;
+    // Si está vacío Y no estamos en la página del carrito, no mostramos nada.
+    // (Si estamos dentro, sí lo mostramos para poder "cerrar" y salir)
+    if (totalItems === 0 && !isOpen) return null;
 
     return (
         <Link
             href={isOpen ? '/' : '/carrito'} // Lógica de Toogle: Si está abierto, ve a Home. Si no, ve a Carrito.
-            className={`fixed bottom-6 right-6 text-white p-4 rounded-full shadow-lg hover:scale-110 transition-all z-50 flex items-center justify-center gap-2 ${isOpen ? 'bg-red-600 rotate-0' : 'bg-black'
+            className={`fixed bottom-6 left-6 text-white p-4 rounded-full shadow-lg hover:scale-110 transition-all z-50 flex items-center justify-center gap-2 ${isOpen ? 'bg-red-600 rotate-0' : 'bg-black'
                 }`}
         >
             {isOpen ? (
