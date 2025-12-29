@@ -1,67 +1,72 @@
-
 'use client';
 
 import Image from 'next/image';
-import { Product } from '@/lib/data'; // 👈 Importamos la "forma" que definimos antes
-
-// ----------------------------------------------------------------------
-// 🎓 ZONA DE APRENDIZAJE: PROPS
-// ----------------------------------------------------------------------
-// Los componentes en React reciben "Props" (argumentos).
-// Aquí le decimos: "Este componente OBLIGATORIAMENTE necesita recibir
-// un 'product' que cumpla con la interface Product".
-// ----------------------------------------------------------------------
+import { Product } from '@/lib/data';
+import { useCart } from '@/context/CartContext';
 
 interface MenuItemProps {
   product: Product;
 }
 
 export default function MenuItem({ product }: MenuItemProps) {
-  // formatear el precio a pesos (ej: $12.000)
-  const formattedPrice = new Intl.NumberFormat('es-CO', {
+  const { addToCart } = useCart();
+
+  const formattedPrice = new Intl.NumberFormat('es-CL', {
     style: 'currency',
-    currency: 'COP',
-    maximumFractionDigits: 0
+    currency: 'CLP',
   }).format(product.price);
 
   return (
-    <div className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col gap-3">
-      {/* 1. Imagen (si existe) */}
-      {/* Usamos Next Image para optimización automática */}
-      <div className="relative w-full h-48 rounded-md overflow-hidden bg-gray-100">
+    <div className="group relative w-full aspect-[3/4] overflow-hidden rounded-2xl shadow-xl transition-transform hover:scale-[1.02]">
+      {/* 1. IMAGEN DE FONDO (Full Cover) */}
+      <div className="absolute inset-0 bg-gray-900">
         {product.image ? (
           <Image
             src={product.image}
             alt={product.name}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90"
           />
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-400">
-            Sin imagen
+          <div className="flex h-full items-center justify-center text-gray-500 font-bold tracking-widest">
+            NO IMAGE
           </div>
         )}
       </div>
 
-      {/* 2. Información */}
-      <div className="flex-1">
-        <h3 className="font-bold text-lg text-gray-800">{product.name}</h3>
-        <p className="text-sm text-gray-500 line-clamp-2">{product.description}</p>
-      </div>
+      {/* 2. OVERLAY GRADIENTE (Para legibilidad) */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#020202] via-[#020202]/60 to-transparent opacity-90" />
 
-      {/* 3. Precio y Botón */}
-      <div className="flex items-center justify-between mt-2">
-        <span className="font-semibold text-green-700 text-lg">
-          {formattedPrice}
-        </span>
+      {/* 3. INFO Y ACCIONES (Flotando encima) */}
+      <div className="absolute bottom-0 left-0 w-full p-6 flex flex-col gap-2 z-10">
+        {/* Nombre con fuente Urban */}
+        <h3 className="text-4xl text-[#FAFFFD] uppercase tracking-wide drop-shadow-md font-[family-name:var(--font-urban-heading)]">
+          {product.name}
+        </h3>
 
-        <button
-          className="bg-black text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
-          // Por ahora este botón no hace nada, eso lo veremos en el Módulo 3
-          onClick={() => alert(`Añadir ${product.name} (Próximamente)`)}
-        >
-          Añadir +
-        </button>
+        {/* Descripción corta */}
+        <p className="text-sm text-gray-300 line-clamp-2 font-[family-name:var(--font-urban-body)] mb-2">
+          {product.description}
+        </p>
+
+        <div className="flex items-center justify-between mt-2">
+          {/* Precio destacado */}
+          <span className="text-2xl text-[#F0C808] drop-shadow-sm font-[family-name:var(--font-urban-heading)] tracking-wider">
+            {formattedPrice}
+          </span>
+
+          {/* Botón Urbano */}
+          <button
+            onClick={() => {
+              addToCart(product);
+              // Podríamos usar un toast aquí mejor que un alert
+              // alert(`${product.name} ready!`);
+            }}
+            className="bg-[#DD1C1A] text-white px-6 py-2 rounded-lg font-bold uppercase tracking-widest hover:bg-[#F0C808] hover:text-black transition-colors active:scale-95 shadow-lg font-[family-name:var(--font-urban-heading)]"
+          >
+            AÑADIR +
+          </button>
+        </div>
       </div>
     </div>
   );
