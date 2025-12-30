@@ -84,6 +84,17 @@ export default function Navigation() {
                     >
                         Tu Pedido
                     </Link>
+
+                    {/* Admin Link - Solo visible para admin */}
+                    {user?.email === 'maonvacation@gmail.com' && (
+                        <Link
+                            href="/admin"
+                            onClick={toggleMenu}
+                            className="text-3xl md:text-4xl font-[family-name:var(--font-urban-heading)] text-[#F0C808] hover:text-[#DD1C1A] transition-colors uppercase tracking-tight border-t border-[#333] pt-6 mt-4"
+                        >
+                            🔧 Panel Admin
+                        </Link>
+                    )}
                 </nav>
 
                 {/* 3. FOOTER (Social) */}
