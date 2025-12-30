@@ -30,8 +30,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${bebasNeue.variable} ${montserrat.variable} antialiased bg-[#020202] text-[#FAFFFD]`}
+        className={`${bebasNeue.variable} ${montserrat.variable} antialiased text-[#FAFFFD] relative min-h-screen`}
       >
+        {/* Background Video */}
+        <div className="fixed inset-0 -z-10 bg-[#020202]">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover opacity-40 grayscale-[20%]"
+          >
+            <source src="/assets/pizza-bg.mp4" type="video/mp4" />
+          </video>
+          {/* Overlay to ensure legibility */}
+          <div className="absolute inset-0 bg-[#020202]/30" />
+        </div>
+
         <AuthProvider>
           <CartProvider>
             {children}

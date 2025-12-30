@@ -3,12 +3,23 @@
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function CartIcon() {
     const { cart } = useCart();
     const pathname = usePathname();
+    const [animate, setAnimate] = useState(false);
 
     const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+
+    // Trigger animation when totalItems changes
+    useEffect(() => {
+        if (totalItems > 0) {
+            setAnimate(true);
+            const timer = setTimeout(() => setAnimate(false), 500);
+            return () => clearTimeout(timer);
+        }
+    }, [totalItems]);
 
     // Determinamos si el carrito está "abierto" (si estamos en la página)
     const isOpen = pathname === '/carrito';

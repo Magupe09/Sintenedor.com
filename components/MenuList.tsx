@@ -6,7 +6,7 @@ export default function MenuList() {
         // CONTENEDOR PRINCIPAL
         // sm+: H-screen + Overflow hidden (No scroll)
         // Mobile (<640px): Scroll normal
-        <div className="w-full h-full sm:h-screen sm:overflow-hidden flex flex-col items-center bg-[#020202]">
+        <div className="w-full h-full sm:h-screen sm:overflow-hidden flex flex-col items-center bg-transparent">
 
             {/* HEADER */}
             <div className="shrink-0 py-6 text-center z-10 w-full max-w-7xl mx-auto px-4">
