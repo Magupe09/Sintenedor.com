@@ -8,8 +8,10 @@ import { useRouter } from 'next/navigation';
 interface AuthContextType {
     user: User | null;
     session: Session | null;
+    points: number;
     signInWithEmail: (email: string, pass: string) => Promise<{ error: any }>;
     signUpWithEmail: (email: string, pass: string, data: any) => Promise<{ error: any }>;
+    updateProfile: (data: any) => Promise<{ error: any }>;
     signInWithGoogle: () => Promise<{ error: any }>;
     signOut: () => Promise<void>;
 }
@@ -22,11 +24,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const supabase = createClient();
 
+    const [points, setPoints] = useState<number>(0);
+
     useEffect(() => {
         // Obtenemos la sesión inicial
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
             setUser(session?.user ?? null);
+            // Mock points fetch
+            if (session?.user) setPoints(450);
         });
 
         // Escuchamos cambios en la sesión (Login, Loguot)
@@ -35,8 +41,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } = supabase.auth.onAuthStateChange((_event, session) => {
             setSession(session);
             setUser(session?.user ?? null);
+            if (session?.user) setPoints(450);
             if (_event === 'SIGNED_OUT') {
                 setUser(null);
+                setPoints(0);
                 router.push('/');
             }
         });
@@ -64,6 +72,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { error };
     };
 
+    const updateProfile = async (data: any) => {
+        const { error } = await supabase.auth.updateUser({
+            data: data
+        });
+        return { error };
+    };
+
     const signInWithGoogle = async () => {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
@@ -79,7 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, session, signInWithEmail, signUpWithEmail, signInWithGoogle, signOut }}>
+        <AuthContext.Provider value={{ user, session, points, signInWithEmail, signUpWithEmail, updateProfile, signInWithGoogle, signOut }}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FAFFFD;
-  --foreground: #020202;
+  --background: #020202;
+  --foreground: #FAFFFD;
 
   /* Palette */
   --urban-primary: #DD1C1A;
@@ -13,6 +13,11 @@
   /* Yellow */
   --urban-four: #020202;
   /* Black */
+}
+
+.light {
+  --background: #FAFFFD;
+  --foreground: #020202;
 }
 
 @theme inline {

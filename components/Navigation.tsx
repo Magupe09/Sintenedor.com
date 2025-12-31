@@ -70,6 +70,26 @@ export default function Navigation() {
                     >
                         Inicio
                     </Link>
+
+                    {user && (
+                        <>
+                            <Link
+                                href="/perfil"
+                                onClick={toggleMenu}
+                                className="text-5xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-urban-yellow hover:text-white transition-colors uppercase tracking-tight"
+                            >
+                                Mi Perfil
+                            </Link>
+                            <Link
+                                href="/pedidos"
+                                onClick={toggleMenu}
+                                className="text-5xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-white hover:text-[#DD1C1A] transition-colors uppercase tracking-tight"
+                            >
+                                Mis Pedidos
+                            </Link>
+                        </>
+                    )}
+
                     <Link
                         href="/" // Por ahora va al home, luego a /menu
                         onClick={toggleMenu}

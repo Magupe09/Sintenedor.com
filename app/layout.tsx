@@ -3,8 +3,10 @@ import { Bebas_Neue, Montserrat } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import CartIcon from "@/components/CartIcon";
 import Navigation from "@/components/Navigation";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const bebasNeue = Bebas_Neue({
   variable: "--font-urban-heading",
@@ -30,30 +32,33 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${bebasNeue.variable} ${montserrat.variable} antialiased text-[#FAFFFD] relative min-h-screen`}
+        className={`${bebasNeue.variable} ${montserrat.variable} antialiased text-foreground bg-background transition-colors duration-500 relative min-h-screen`}
       >
-        {/* Background Video */}
-        <div className="fixed inset-0 -z-10 bg-[#020202]">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover opacity-40 grayscale-[20%]"
-          >
-            <source src="/assets/pizza-bg.mp4" type="video/mp4" />
-          </video>
-          {/* Overlay to ensure legibility */}
-          <div className="absolute inset-0 bg-[#020202]/30" />
-        </div>
+        <ThemeProvider>
+          {/* Background Video */}
+          <div className="fixed inset-0 -z-10 bg-background overflow-hidden">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover opacity-40 grayscale-[20%] dark:opacity-40 light:opacity-10 transition-opacity duration-700"
+            >
+              <source src="/assets/pizza-bg.mp4" type="video/mp4" />
+            </video>
+            {/* Overlay to ensure legibility */}
+            <div className="absolute inset-0 bg-background/30 transition-colors duration-700" />
+          </div>
 
-        <AuthProvider>
-          <CartProvider>
-            {children}
-            <CartIcon />
-            <Navigation />
-          </CartProvider>
-        </AuthProvider>
+          <AuthProvider>
+            <CartProvider>
+              <ThemeToggle />
+              {children}
+              <CartIcon />
+              <Navigation />
+            </CartProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
