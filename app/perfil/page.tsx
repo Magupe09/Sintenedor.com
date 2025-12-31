@@ -101,7 +101,7 @@ export default function ProfilePage() {
                                 type="text"
                                 value={fullName}
                                 onChange={(e) => setFullName(e.target.value)}
-                                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-urban-red transition-colors"
+                                className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-urban-red transition-colors"
                                 placeholder="..."
                             />
                         </div>
@@ -111,7 +111,7 @@ export default function ProfilePage() {
                                 type="tel"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
-                                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-urban-red transition-colors"
+                                className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-urban-red transition-colors"
                                 placeholder="Ej: +57 300..."
                             />
                         </div>
@@ -121,7 +121,7 @@ export default function ProfilePage() {
                                 value={address}
                                 onChange={(e) => setAddress(e.target.value)}
                                 rows={3}
-                                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-urban-red transition-colors resize-none"
+                                className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-urban-red transition-colors resize-none"
                                 placeholder="Donde llega la magia..."
                             />
                         </div>
@@ -129,7 +129,7 @@ export default function ProfilePage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-white text-black font-bold py-4 rounded-full uppercase tracking-widest hover:bg-urban-yellow transition-all disabled:opacity-50 mt-4"
+                            className="w-full bg-foreground text-background font-bold py-4 rounded-full uppercase tracking-widest hover:bg-urban-yellow hover:text-black transition-all disabled:opacity-50 mt-4"
                         >
                             {loading ? 'Guardando...' : 'Actualizar mis datos'}
                         </button>

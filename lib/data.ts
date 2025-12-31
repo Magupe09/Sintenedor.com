@@ -40,7 +40,7 @@ export const MENU_ITEMS: Product[] = [
     description: "La clásica. Salsa de tomate, mozzarella fior di latte y albahaca fresca.",
     price: 12000,
     category: "pizzas",
-    image: "https://images.unsplash.com/photo-1574071318500-d0d51f2cb673?auto=format&fit=crop&w=500&q=80"
+    image: "/assets/pizza_margarita.png"
   },
   {
     id: "p2",
@@ -50,7 +50,7 @@ export const MENU_ITEMS: Product[] = [
     category: "pizzas",
     image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=500&q=80"
   },
-  
+
   // HAMBURGUESAS
   {
     id: "h1",
@@ -60,7 +60,7 @@ export const MENU_ITEMS: Product[] = [
     category: "hamburguesas",
     image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80"
   },
-  
+
   // BEBIDAS
   {
     id: "b1",

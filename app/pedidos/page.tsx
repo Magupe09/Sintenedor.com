@@ -53,7 +53,7 @@ export default function OrdersPage() {
             <div className="flex justify-between items-center mb-12">
                 <h1 className="text-5xl md:text-7xl font-[family-name:var(--font-urban-heading)] uppercase tracking-tighter">Mis Pedidos</h1>
                 <Link href="/perfil">
-                    <div className="bg-white/5 border border-white/10 p-3 rounded-xl hover:bg-white/10 transition-colors">
+                    <div className="bg-foreground/5 border border-foreground/10 p-3 rounded-xl hover:bg-foreground/10 transition-colors">
                         <span className="text-xs uppercase tracking-widest">Mi Perfil 👤</span>
                     </div>
                 </Link>
@@ -61,7 +61,7 @@ export default function OrdersPage() {
 
             <div className="space-y-6">
                 {MOCK_ORDERS.length === 0 ? (
-                    <div className="text-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                    <div className="text-center py-20 bg-foreground/5 rounded-3xl border border-dashed border-foreground/10">
                         <p className="text-xl opacity-50 mb-4">Aún no has hecho ningún pedido...</p>
                         <Link href="/">
                             <button className="text-urban-yellow hover:text-white transition-colors underline underline-offset-4">
@@ -71,7 +71,7 @@ export default function OrdersPage() {
                     </div>
                 ) : (
                     MOCK_ORDERS.map((order) => (
-                        <div key={order.id} className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8 hover:border-white/20 transition-all group">
+                        <div key={order.id} className="bg-foreground/5 border border-foreground/10 rounded-3xl p-6 md:p-8 hover:border-foreground/20 transition-all group">
                             <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
                                 <div>
                                     <div className="flex items-center gap-3 mb-1">
@@ -90,12 +90,12 @@ export default function OrdersPage() {
                                 </div>
                             </div>
 
-                            <div className="border-t border-white/10 pt-6 mb-6">
+                            <div className="border-t border-foreground/10 pt-6 mb-6">
                                 <ul className="space-y-3">
                                     {order.items.map((item, idx) => (
                                         <li key={idx} className="flex justify-between text-sm">
                                             <span className="opacity-80">
-                                                <span className="font-bold text-white">{item.quantity}x</span> {item.name}
+                                                <span className="font-bold text-foreground">{item.quantity}x</span> {item.name}
                                             </span>
                                             <span className="opacity-40">${(item.price * item.quantity).toLocaleString()}</span>
                                         </li>
@@ -111,7 +111,7 @@ export default function OrdersPage() {
                                     </p>
                                 </div>
 
-                                <button className="w-full md:w-auto bg-white/5 border border-white/20 hover:bg-white hover:text-black text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all">
+                                <button className="w-full md:w-auto bg-foreground/5 border border-foreground/20 hover:bg-foreground hover:text-background text-foreground px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all">
                                     Repetir Pedido
                                 </button>
                             </div>

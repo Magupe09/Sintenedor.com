@@ -34,7 +34,7 @@ export default function Navigation() {
 
             {/* OVERLAY / TELÓN A PANTALLA COMPLETA */}
             <div
-                className={`fixed inset-0 bg-[#020202] z-[55] flex flex-col items-center justify-center transition-all duration-500 ease-in-out
+                className={`fixed inset-0 bg-background z-[55] flex flex-col items-center justify-center transition-all duration-500 ease-in-out overflow-y-auto pt-24 pb-12
                     ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}
                 `}
             >
@@ -62,11 +62,11 @@ export default function Navigation() {
                 </div>
 
                 {/* 2. MENÚ DE NAVEGACIÓN */}
-                <nav className="flex flex-col gap-6 text-center">
+                <nav className="flex flex-col gap-4 md:gap-6 text-center max-h-full">
                     <Link
                         href="/"
                         onClick={toggleMenu}
-                        className="text-5xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-white hover:text-[#DD1C1A] transition-colors uppercase tracking-tight"
+                        className="text-4xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-foreground hover:text-[#DD1C1A] transition-colors uppercase tracking-tight"
                     >
                         Inicio
                     </Link>
@@ -76,14 +76,14 @@ export default function Navigation() {
                             <Link
                                 href="/perfil"
                                 onClick={toggleMenu}
-                                className="text-5xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-urban-yellow hover:text-white transition-colors uppercase tracking-tight"
+                                className="text-4xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-urban-yellow hover:text-foreground transition-colors uppercase tracking-tight"
                             >
                                 Mi Perfil
                             </Link>
                             <Link
                                 href="/pedidos"
                                 onClick={toggleMenu}
-                                className="text-5xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-white hover:text-[#DD1C1A] transition-colors uppercase tracking-tight"
+                                className="text-4xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-foreground hover:text-[#DD1C1A] transition-colors uppercase tracking-tight"
                             >
                                 Mis Pedidos
                             </Link>
@@ -93,14 +93,14 @@ export default function Navigation() {
                     <Link
                         href="/" // Por ahora va al home, luego a /menu
                         onClick={toggleMenu}
-                        className="text-5xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-white hover:text-[#DD1C1A] transition-colors uppercase tracking-tight"
+                        className="text-4xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-foreground hover:text-[#DD1C1A] transition-colors uppercase tracking-tight"
                     >
                         Menú Completo
                     </Link>
                     <Link
                         href="/carrito"
                         onClick={toggleMenu}
-                        className="text-5xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-gray-500 hover:text-white transition-colors uppercase tracking-tight"
+                        className="text-4xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-gray-500 hover:text-foreground transition-colors uppercase tracking-tight"
                     >
                         Tu Pedido
                     </Link>
@@ -110,7 +110,7 @@ export default function Navigation() {
                         <Link
                             href="/admin"
                             onClick={toggleMenu}
-                            className="text-3xl md:text-4xl font-[family-name:var(--font-urban-heading)] text-[#F0C808] hover:text-[#DD1C1A] transition-colors uppercase tracking-tight border-t border-[#333] pt-6 mt-4"
+                            className="text-2xl md:text-4xl font-[family-name:var(--font-urban-heading)] text-[#F0C808] hover:text-[#DD1C1A] transition-colors uppercase tracking-tight border-t border-white/10 pt-4 mt-2"
                         >
                             🔧 Panel Admin
                         </Link>

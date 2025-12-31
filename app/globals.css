@@ -34,8 +34,9 @@
 }
 
 body {
-  color: #FAFFFD;
+  color: var(--foreground);
   font-family: var(--font-urban-body), sans-serif;
+  transition: color 0.5s ease-in-out, background-color 0.5s ease-in-out;
 }
 
 /* Custom Animations */

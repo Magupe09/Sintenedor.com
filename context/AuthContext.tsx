@@ -18,17 +18,19 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const supabase = createClient();
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [session, setSession] = useState<Session | null>(null);
     const router = useRouter();
-    const supabase = createClient();
 
     const [points, setPoints] = useState<number>(0);
 
     useEffect(() => {
         // Obtenemos la sesión inicial
         supabase.auth.getSession().then(({ data: { session } }) => {
+            console.log("Auth session initial check:", !!session);
             setSession(session);
             setUser(session?.user ?? null);
             // Mock points fetch
@@ -39,13 +41,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const {
             data: { subscription },
         } = supabase.auth.onAuthStateChange((_event, session) => {
+            console.log("Auth State Change Event:", _event, !!session);
             setSession(session);
             setUser(session?.user ?? null);
             if (session?.user) setPoints(450);
+
             if (_event === 'SIGNED_OUT') {
                 setUser(null);
                 setPoints(0);
                 router.push('/');
+            }
+
+            if (_event === 'SIGNED_IN') {
+                router.refresh();
             }
         });
 
