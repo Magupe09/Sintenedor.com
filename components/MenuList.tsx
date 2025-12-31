@@ -10,6 +10,7 @@ export default function MenuList() {
 
             {/* HEADER */}
             <div className="shrink-0 py-6 text-center z-10 w-full max-w-7xl mx-auto px-4">
+
                 <h1 className="text-5xl sm:text-6xl md:text-8xl font-[family-name:var(--font-urban-heading)] text-[#DD1C1A] uppercase tracking-tighter drop-shadow-sm leading-none">
                     Sintenedor
                 </h1>
