@@ -31,8 +31,8 @@ export default function MenuList() {
                 lg (Desktop 1024px+):
                 - Permitimos más ancho (max-w-7xl) para las 4 columnas en fila.
             */}
-            <div className="flex-1 w-full flex items-center justify-center min-h-0 px-4 pb-4">
-                <div className="grid gap-4 w-full h-fit max-h-full
+            <div className="flex-1 w-full flex items-center justify-center min-h-0 px-4 pb-6">
+                <div className="grid gap-6 w-[85%] h-fit max-h-full
                                 grid-cols-1 overflow-y-auto 
                                 sm:grid-cols-2 sm:overflow-visible sm:max-w-md md:max-w-lg
                                 lg:grid-cols-4 lg:max-w-7xl">

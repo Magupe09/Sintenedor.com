@@ -62,11 +62,11 @@ export default function CartIcon() {
                     </svg>
                 ) : (
                     // LOGO COMO CARRITO (Forced size 70px-80px)
-                    <div className="relative flex items-center justify-center w-full h-full p-2">
+                    <div className="relative flex items-center justify-center w-full h-full">
                         <img
                             src="/assets/logo.png"
                             alt="Carrito"
-                            className="w-[80%] h-[80%] object-contain drop-shadow-[0_4px_10px_rgba(221,28,26,0.3)]"
+                            className="w-full h-full object-contain drop-shadow-[0_4px_10px_rgba(221,28,26,0.3)]"
                         />
 
                         {/* BADGE DEL CONTADOR - Posicionado arriba como una moneda */}

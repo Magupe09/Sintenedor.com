@@ -50,20 +50,20 @@ export default function MenuItem({ product }: MenuItemProps) {
       <div className="absolute inset-0 bg-gradient-to-t from-[#020202] via-[#020202]/60 to-transparent opacity-90" />
 
       {/* 3. INFO Y ACCIONES (Flotando encima) */}
-      <div className="absolute bottom-0 left-0 w-full p-6 flex flex-col gap-2 z-10">
+      <div className="absolute bottom-0 left-0 w-full p-5 md:p-6 flex flex-col gap-1.5 md:gap-2 z-10">
         {/* Nombre con fuente Urban */}
-        <h3 className="text-4xl text-[#FAFFFD] uppercase tracking-wide drop-shadow-md font-[family-name:var(--font-urban-heading)]">
+        <h3 className="text-3xl md:text-4xl text-[#FAFFFD] uppercase tracking-wide drop-shadow-md font-[family-name:var(--font-urban-heading)]">
           {product.name}
         </h3>
 
         {/* Descripción corta */}
-        <p className="text-sm text-gray-300 line-clamp-2 font-[family-name:var(--font-urban-body)] mb-2">
+        <p className="text-xs md:text-sm text-gray-300 line-clamp-2 font-[family-name:var(--font-urban-body)] mb-1 md:mb-2">
           {product.description}
         </p>
 
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex items-center justify-between mt-1 md:mt-2">
           {/* Precio destacado */}
-          <span className="text-2xl text-[#F0C808] drop-shadow-sm font-[family-name:var(--font-urban-heading)] tracking-wider">
+          <span className="text-xl md:text-2xl text-[#F0C808] drop-shadow-sm font-[family-name:var(--font-urban-heading)] tracking-wider">
             {formattedPrice}
           </span>
 
@@ -74,7 +74,7 @@ export default function MenuItem({ product }: MenuItemProps) {
                 addToCart(product);
                 setShowToast(true);
               }}
-              className="bg-[#DD1C1A] text-white px-4 py-1.5 md:px-6 md:py-2 rounded-lg font-bold text-sm md:text-base uppercase tracking-widest hover:bg-[#F0C808] hover:text-black transition-colors active:scale-95 shadow-lg font-[family-name:var(--font-urban-heading)]"
+              className="bg-[#DD1C1A] text-white px-4 py-1.5 md:px-6 md:py-2 rounded-lg font-bold text-xs md:text-base uppercase tracking-widest hover:bg-[#F0C808] hover:text-black transition-colors active:scale-95 shadow-lg font-[family-name:var(--font-urban-heading)]"
             >
               AÑADIR +
             </button>
