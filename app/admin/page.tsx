@@ -1,11 +1,12 @@
 import { createClient } from '@/utils/supabase/server'
 import Link from 'next/link'
+import AdminKitchenLink from '@/components/AdminKitchenLink'
 
 export default async function AdminPage() {
     const supabase = await createClient()
 
     // Get user count from Supabase Auth
-    const { data: { users }, error } = await supabase.auth.admin.listUsers()
+    const { data: { users } } = await supabase.auth.admin.listUsers()
     const userCount = users?.length || 0
 
     return (
@@ -40,20 +41,20 @@ export default async function AdminPage() {
                         </p>
                     </div>
 
-                    {/* Orders Card (Placeholder) */}
-                    <div className="bg-[#111] border border-[#333] rounded-xl p-6 opacity-50">
+                    {/* Orders Card (Active) */}
+                    <div className="bg-[#111] border border-[#333] rounded-xl p-6 hover:border-urban-yellow transition-colors">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-gray-400 text-sm uppercase tracking-widest">
-                                Pedidos (WhatsApp)
+                                Gestión de Pedidos
                             </h3>
                             <svg className="w-8 h-8 text-[#F0C808]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                             </svg>
                         </div>
                         <p className="text-4xl font-[family-name:var(--font-urban-heading)]">
-                            -
+                            LIVE
                         </p>
-                        <p className="text-xs text-gray-500 mt-2">Próximamente</p>
+                        <p className="text-xs text-urban-yellow mt-2">Sistema Conectado</p>
                     </div>
 
                     {/* Revenue Card (Placeholder) */}
@@ -80,7 +81,7 @@ export default async function AdminPage() {
                     {/* Users Management */}
                     <Link
                         href="/admin/users"
-                        className="bg-gradient-to-br from-[#DD1C1A] to-[#a01513] rounded-xl p-8 hover:scale-105 transition-transform group"
+                        className="bg-gradient-to-br from-[#DD1C1A] to-[#a01513] rounded-xl p-8 hover:scale-[1.02] transition-transform group"
                     >
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-2xl font-[family-name:var(--font-urban-heading)]">
@@ -95,20 +96,8 @@ export default async function AdminPage() {
                         </p>
                     </Link>
 
-                    {/* Orders Management (Disabled) */}
-                    <div className="bg-[#111] border border-[#333] rounded-xl p-8 opacity-50 cursor-not-allowed">
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-2xl font-[family-name:var(--font-urban-heading)]">
-                                GESTIONAR PEDIDOS
-                            </h2>
-                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                            </svg>
-                        </div>
-                        <p className="text-gray-500 font-[family-name:var(--font-urban-body)]">
-                            Próximamente - Por ahora usa WhatsApp
-                        </p>
-                    </div>
+                    {/* Kitchen Link (Integrated) */}
+                    <AdminKitchenLink />
 
                 </div>
 

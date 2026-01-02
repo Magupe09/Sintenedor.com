@@ -1,36 +1,67 @@
-'use client';
-
 import { useAuth } from '@/context/AuthContext';
+import { createClient } from '@/utils/supabase/client';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-// Mock data for orders
-const MOCK_ORDERS = [
-    {
-        id: 'ORD-7721',
-        date: '2025-12-28',
-        items: [
-            { name: 'Pizza Pepperoni', quantity: 2, price: 14000 },
-            { name: 'Coca Cola', quantity: 2, price: 3000 }
-        ],
-        total: 34000,
-        status: 'Entregado',
-        pointsEarned: 34
-    },
-    {
-        id: 'ORD-6542',
-        date: '2025-12-20',
-        items: [
-            { name: 'Classic Cheese', quantity: 1, price: 16000 },
-            { name: 'Bebida', quantity: 1, price: 3000 }
-        ],
-        total: 19000,
-        status: 'Entregado',
-        pointsEarned: 19
-    }
-];
+interface OrderItem {
+    nombre_producto: string;
+    cantidad: number;
+    precio_unitario: number;
+}
+
+interface Order {
+    id: string;
+    created_at: string;
+    total: number;
+    estado: string;
+    items_pedido?: OrderItem[];
+}
 
 export default function OrdersPage() {
     const { user } = useAuth();
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [loading, setLoading] = useState(true);
+    const supabase = createClient();
+
+    useEffect(() => {
+        if (!user) return;
+
+        const fetchOrders = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('pedidos')
+                    .select(`
+                        *,
+                        items_pedido (*)
+                    `)
+                    .eq('user_id', user.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                setOrders(data || []);
+            } catch (err) {
+                console.error('Error fetching orders:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchOrders();
+
+        // Suscripción para ver actualizaciones de estado en tiempo real (cocina)
+        const channel = supabase
+            .channel('user-orders')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'pedidos', filter: `user_id=eq.${user.id}` },
+                () => fetchOrders()
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [user]);
 
     if (!user) {
         return (
@@ -48,6 +79,16 @@ export default function OrdersPage() {
         );
     }
 
+    const getStatusStyles = (status: string) => {
+        switch (status) {
+            case 'pendiente': return 'bg-urban-red/10 text-urban-red border-urban-red/20';
+            case 'preparando': return 'bg-urban-yellow/10 text-urban-yellow border-urban-yellow/20';
+            case 'listo': return 'bg-green-500/10 text-green-500 border-green-500/20';
+            case 'entregado': return 'bg-foreground/5 text-foreground/50 border-foreground/10';
+            default: return 'bg-foreground/5 text-foreground border-foreground/10';
+        }
+    };
+
     return (
         <div className="min-h-screen pt-24 pb-12 px-6 max-w-4xl mx-auto">
             <div className="flex justify-between items-center mb-12">
@@ -60,7 +101,9 @@ export default function OrdersPage() {
             </div>
 
             <div className="space-y-6">
-                {MOCK_ORDERS.length === 0 ? (
+                {loading ? (
+                    <div className="text-center py-20 opacity-30">Cargando banquetes...</div>
+                ) : orders.length === 0 ? (
                     <div className="text-center py-20 bg-foreground/5 rounded-3xl border border-dashed border-foreground/10">
                         <p className="text-xl opacity-50 mb-4">Aún no has hecho ningún pedido...</p>
                         <Link href="/">
@@ -70,17 +113,19 @@ export default function OrdersPage() {
                         </Link>
                     </div>
                 ) : (
-                    MOCK_ORDERS.map((order) => (
-                        <div key={order.id} className="bg-foreground/5 border border-foreground/10 rounded-3xl p-6 md:p-8 hover:border-foreground/20 transition-all group">
+                    orders.map((order) => (
+                        <div key={order.id} className="bg-foreground/5 border border-foreground/10 rounded-3xl p-6 md:p-8 hover:border-[#F0C808]/30 transition-all group">
                             <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
                                 <div>
                                     <div className="flex items-center gap-3 mb-1">
-                                        <h3 className="text-xl font-bold uppercase tracking-tight">{order.id}</h3>
-                                        <span className="bg-green-500/10 text-green-500 text-[10px] px-2 py-0.5 rounded-full border border-green-500/20 uppercase font-bold">
-                                            {order.status}
+                                        <h3 className="text-xl font-bold uppercase tracking-tight">#{order.id.slice(0, 8)}</h3>
+                                        <span className={`text-[10px] px-2 py-0.5 rounded-full border uppercase font-bold ${getStatusStyles(order.estado)}`}>
+                                            {order.estado}
                                         </span>
                                     </div>
-                                    <p className="text-xs opacity-50 font-mono">{order.date}</p>
+                                    <p className="text-xs opacity-50 font-mono">
+                                        {new Date(order.created_at).toLocaleDateString()} {new Date(order.created_at).toLocaleTimeString()}
+                                    </p>
                                 </div>
                                 <div className="text-right">
                                     <p className="text-[10px] uppercase opacity-50 tracking-widest mb-1">Total Pagado</p>
@@ -92,12 +137,12 @@ export default function OrdersPage() {
 
                             <div className="border-t border-foreground/10 pt-6 mb-6">
                                 <ul className="space-y-3">
-                                    {order.items.map((item, idx) => (
+                                    {order.items_pedido?.map((item, idx) => (
                                         <li key={idx} className="flex justify-between text-sm">
                                             <span className="opacity-80">
-                                                <span className="font-bold text-foreground">{item.quantity}x</span> {item.name}
+                                                <span className="font-bold text-foreground">{item.cantidad}x</span> {item.nombre_producto}
                                             </span>
-                                            <span className="opacity-40">${(item.price * item.quantity).toLocaleString()}</span>
+                                            <span className="opacity-40">${(item.precio_unitario * item.cantidad).toLocaleString()}</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -107,12 +152,12 @@ export default function OrdersPage() {
                                 <div className="flex items-center gap-2 bg-urban-yellow/10 px-4 py-2 rounded-full border border-urban-yellow/20">
                                     <span className="text-lg">✨</span>
                                     <p className="text-xs font-bold text-urban-yellow uppercase tracking-widest">
-                                        Ganaste {order.pointsEarned} S-Points
+                                        Ganaste {Math.floor(order.total / 1000)} S-Points
                                     </p>
                                 </div>
 
-                                <button className="w-full md:w-auto bg-foreground/5 border border-foreground/20 hover:bg-foreground hover:text-background text-foreground px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all">
-                                    Repetir Pedido
+                                <button className="w-full md:w-auto bg-foreground/5 border border-foreground/20 hover:bg-foreground hover:text-black text-foreground px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all">
+                                    Ver Detalle
                                 </button>
                             </div>
                         </div>

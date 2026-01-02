@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import MemberCard from '@/components/MemberCard';
+import AdminKitchenLink from '@/components/AdminKitchenLink';
 import Link from 'next/link';
 import Toast from '@/components/Toast';
 
@@ -65,6 +66,7 @@ export default function ProfilePage() {
                 {/* Left Side: Member Card & Info */}
                 <div className="space-y-8">
                     <MemberCard />
+                    <AdminKitchenLink />
 
                     <div className="bg-white/5 border border-white/10 p-6 rounded-2xl backdrop-blur-sm">
                         <h2 className="text-2xl font-[family-name:var(--font-urban-heading)] mb-4 text-urban-yellow">Tus Beneficios</h2>

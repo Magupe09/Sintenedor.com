@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
+import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
 
 export default function CartPage() {
@@ -21,41 +23,71 @@ export default function CartPage() {
         }).format(amount);
     };
 
-    const handleCheckout = (e: React.FormEvent) => {
+    const { user } = useAuth();
+    const supabase = createClient();
+
+    const handleCheckout = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        // 1. Construimos el mensaje de texto para WhatsApp
-        // Usamos \n para saltos de línea (que en la URL se convierten en %0A)
-        let message = `Hola *Sintenedor*, quiero hacer un pedido:\n\n`;
+        try {
+            // 1. Guardar en la Base de Datos (Supabase)
+            const { data: orderData, error: orderError } = await supabase
+                .from('pedidos')
+                .insert({
+                    user_id: user?.id || null,
+                    total: total,
+                    nombre_cliente: clientName,
+                    telefono_cliente: clientPhone,
+                    estado: 'pendiente'
+                })
+                .select()
+                .single();
 
-        // Agregamos cada producto
-        cart.forEach(item => {
-            message += `🍕 ${item.quantity}x ${item.product.name} - ${formatPrice(item.product.price * item.quantity)}\n`;
-        });
+            if (orderError) throw orderError;
 
-        // Agregamos el total y los datos del cliente
-        message += `\n💰 *Total: ${formatPrice(total)}*\n`;
-        message += `------------------\n`;
-        message += `👤 *Cliente:* ${clientName}\n`;
-        message += `📱 *Teléfono:* ${clientPhone}`;
+            // 2. Guardar los items del pedido
+            const orderItems = cart.map(item => ({
+                pedido_id: orderData.id,
+                producto_id: item.product.id,
+                nombre_producto: item.product.name,
+                cantidad: item.quantity,
+                precio_unitario: item.product.price
+            }));
 
-        // 2. Codificamos el mensaje para que sea válido en una URL
-        // encodeURIComponent convierte espacios en %20, saltos en %0A, etc.
-        const encodedMessage = encodeURIComponent(message);
+            const { error: itemsError } = await supabase
+                .from('items_pedido')
+                .insert(orderItems);
 
-        // 3. Definimos el número de teléfono del negocio (pon tu número real aquí)
-        const phoneNumber = "573015347481"; // Reemplázalo con el tuyo (código pais + número)
+            if (itemsError) throw itemsError;
 
-        // 4. Redirigimos al usuario a la API de WhatsApp
-        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+            // 3. Construimos el mensaje de texto para WhatsApp
+            let message = `Hola *Sintenedor*, quiero hacer un pedido (ID: ${orderData.id.slice(0, 8)}):\n\n`;
 
-        // Abrimos en una nueva pestaña
-        window.open(whatsappUrl, '_blank');
+            cart.forEach(item => {
+                message += `🍕 ${item.quantity}x ${item.product.name} - ${formatPrice(item.product.price * item.quantity)}\n`;
+            });
 
-        // (Opcional) Limpiamos el carrito después de enviar
-        clearCart();
-        setIsSubmitting(false);
+            message += `\n💰 *Total: ${formatPrice(total)}*\n`;
+            message += `------------------\n`;
+            message += `👤 *Cliente:* ${clientName}\n`;
+            message += `📱 *Teléfono:* ${clientPhone}`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const phoneNumber = "573015347481";
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+            window.open(whatsappUrl, '_blank');
+
+            clearCart();
+            alert("Pedido enviado correctamente. ¡Pronto estará listo!");
+
+        } catch (error: any) {
+            console.error("Error al procesar el pedido:", error);
+            alert("Uups, el motor de pedidos falló. Inténtalo de nuevo o llámanos.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     if (cart.length === 0) {
