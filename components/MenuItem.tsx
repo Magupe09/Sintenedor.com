@@ -7,9 +7,10 @@ import { useCart } from '@/context/CartContext';
 
 interface MenuItemProps {
   product: Product;
+  onClick?: () => void;
 }
 
-export default function MenuItem({ product }: MenuItemProps) {
+export default function MenuItem({ product, onClick }: MenuItemProps) {
   const { addToCart } = useCart();
   const [showToast, setShowToast] = useState(false);
 
@@ -29,9 +30,12 @@ export default function MenuItem({ product }: MenuItemProps) {
   }).format(product.price);
 
   return (
-    <div className="group relative w-full aspect-[3/4] overflow-hidden rounded-2xl transition-all duration-500 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(255,255,255,0.05)] shadow-[0_10px_40px_rgba(0,0,0,0.8)] border border-white/4">
+    <div
+      onClick={onClick}
+      className="group relative w-full aspect-[3/4] md:aspect-[4/3] lg:aspect-[2/3] overflow-hidden rounded-2xl transition-all duration-500 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(240,200,8,0.15)] shadow-[0_10px_40px_rgba(0,0,0,0.8)] border border-[#F0C808]/20 hover:border-[#F0C808]/60 cursor-pointer"
+    >
       {/* 1. IMAGEN DE FONDO (Full Cover) */}
-      <div className="absolute inset-0 bg-gray-900">
+      <div className="absolute inset-0 bg-gray-800">
         {product.image ? (
           <Image
             src={product.image}
@@ -46,35 +50,39 @@ export default function MenuItem({ product }: MenuItemProps) {
         )}
       </div>
 
-      {/* 2. OVERLAY GRADIENTE (Para legibilidad) */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#020202] via-[#020202]/60 to-transparent opacity-90" />
+      {/* 2. OVERLAY GRADIENTES (Para legibilidad) */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#020202] via-[#020202]/40 to-transparent opacity-90" />
+      <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-black/80 to-transparent opacity-90" />
 
-      {/* 3. INFO Y ACCIONES (Flotando encima) */}
-      <div className="absolute bottom-0 left-0 w-full p-5 md:p-6 flex flex-col gap-1.5 md:gap-2 z-10">
-        {/* Nombre con fuente Urban */}
-        <h3 className="text-3xl md:text-4xl text-[#FAFFFD] uppercase tracking-wide drop-shadow-md font-[family-name:var(--font-urban-heading)]">
+      {/* 3. TÍTULO EN LA PARTE SUPERIOR */}
+      <div className="absolute top-0 left-0 w-full p-5 md:p-4 lg:p-8 z-20">
+        <h3 className="text-xl md:text-lg lg:text-4xl text-[#FAFFFD] uppercase tracking-tighter drop-shadow-md font-[family-name:var(--font-urban-heading)] lg:leading-[0.8]">
           {product.name}
         </h3>
+      </div>
 
+      {/* 4. INFO Y ACCIONES EN LA PARTE INFERIOR */}
+      <div className="absolute bottom-0 left-0 w-full p-5 md:p-4 lg:p-6 flex flex-col gap-1 md:gap-1 lg:gap-2 z-10">
         {/* Descripción corta */}
-        <p className="text-xs md:text-sm text-gray-300 line-clamp-2 font-[family-name:var(--font-urban-body)] mb-1 md:mb-2">
+        <p className="text-xs md:text-[10px] lg:text-lg text-gray-300 line-clamp-1 md:line-clamp-1 lg:line-clamp-2 font-[family-name:var(--font-urban-body)] opacity-80">
           {product.description}
         </p>
 
-        <div className="flex items-center justify-between mt-1 md:mt-2">
+        <div className="flex items-center justify-between gap-2">
           {/* Precio destacado */}
-          <span className="text-xl md:text-2xl text-[#F0C808] drop-shadow-sm font-[family-name:var(--font-urban-heading)] tracking-wider">
+          <span className="text-xl md:text-lg lg:text-2xl text-[#F0C808] drop-shadow-sm font-[family-name:var(--font-urban-heading)] tracking-wider">
             {formattedPrice}
           </span>
 
           {/* Botón Urbano */}
           <div className="relative">
             <button
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 addToCart(product);
                 setShowToast(true);
               }}
-              className="bg-[#DD1C1A] text-white px-4 py-1.5 md:px-6 md:py-2 rounded-lg font-bold text-xs md:text-base uppercase tracking-widest hover:bg-[#F0C808] hover:text-black transition-colors active:scale-95 shadow-lg font-[family-name:var(--font-urban-heading)]"
+              className="bg-[#DD1C1A] text-white px-4 py-1.5 md:px-5 md:py-2 lg:px-6 lg:py-2 rounded-lg font-bold text-xs md:text-sm lg:text-lg uppercase tracking-widest hover:bg-[#F0C808] hover:text-black transition-colors active:scale-95 shadow-lg font-[family-name:var(--font-urban-heading)]"
             >
               AÑADIR +
             </button>

@@ -15,8 +15,10 @@ export interface Product {
   name: string;      // Nombre visible (ej: "Pizza Margarita")
   description: string; // Descripción corta
   price: number;     // Precio numérico (para poder sumar luego)
-  image?: string;    // El '?' significa que es OPCIONAL (puede no tener foto)
-  category: 'pizzas' | 'hamburguesas' | 'bebidas'; // Solo permitimos estos 3 valores exactos
+  image?: string;    // Foto de fondo para el tarjetón del menú
+  modalImage?: string; // Foto PNG sin fondo para el modal (Efecto flotante)
+  category: 'pizzas' | 'hamburguesas' | 'bebidas';
+  ingredients?: string[];
 }
 
 // 2. Definimos la FORMA que tiene un Item en el Carrito
@@ -40,7 +42,9 @@ export const MENU_ITEMS: Product[] = [
     description: "La clásica. Salsa de tomate, mozzarella fior di latte y albahaca fresca.",
     price: 12000,
     category: "pizzas",
-    image: "/assets/pizza_margarita.png"
+    image: "/assets/pizza_margarita.png",
+    modalImage: "/assets/pizza_margarita.png",
+    ingredients: ["Mozzarella", "Tomate", "Albahaca", "Aceite de Oliva"]
   },
   {
     id: "p2",
@@ -48,7 +52,9 @@ export const MENU_ITEMS: Product[] = [
     description: "Doble pepperoni americano y extra queso mozzarella.",
     price: 14000,
     category: "pizzas",
-    image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=500&q=80"
+    image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=500&q=80",
+    modalImage: "/assets/sinfondopepe.png",
+    ingredients: ["Pepperoni", "Mozzarella", "Salsa Secreta", "Orégano"]
   },
 
   // HAMBURGUESAS
@@ -58,7 +64,9 @@ export const MENU_ITEMS: Product[] = [
     description: "150g de carne angus, queso cheddar, lechuga, tomate y salsa de la casa.",
     price: 16000,
     category: "hamburguesas",
-    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80"
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80",
+    modalImage: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80",
+    ingredients: ["Carne Angus", "Cheddar", "Lechuga", "Tomate"]
   },
 
   // BEBIDAS

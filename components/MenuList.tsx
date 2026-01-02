@@ -1,7 +1,13 @@
+'use client';
+
 import MenuItem from "@/components/MenuItem";
-import { MENU_ITEMS } from "@/lib/data";
+import ProductModal from "@/components/ProductModal";
+import { MENU_ITEMS, Product } from "@/lib/data";
+import { useState } from "react";
 
 export default function MenuList() {
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
     return (
         // CONTENEDOR PRINCIPAL
         // sm+: H-screen + Overflow hidden (No scroll)
@@ -20,10 +26,10 @@ export default function MenuList() {
                         block
                         mx-auto
                         w-auto
-                        h-[80%]
-                        sm:h-[85%]
-                        lg:h-[95%]
-                        max-h-[140px]
+                        h-[95%]
+                        sm:h-full
+                        lg:h-full
+                        max-h-[180px]
                         sm:max-h-full
                         object-contain
                         transition-all duration-500
@@ -36,15 +42,27 @@ export default function MenuList() {
                 Desktop: 60% vh para compensar el logo más grande
             */}
             <div className="flex-1 w-full flex items-center justify-center min-h-0 px-4 pb-8 sm:pb-12 md:pb-32 lg:pb-12">
-                <div className="grid gap-6 md:gap-10 w-[75%] sm:w-full h-fit max-h-full
+                <div className="grid gap-6 md:gap-x-10 md:gap-y-10 w-[75%] sm:w-full h-fit max-h-full
                                 grid-cols-1 overflow-y-auto 
-                                sm:grid-cols-2 sm:overflow-visible sm:max-w-[440px] md:max-w-[500px]
-                                lg:grid-cols-4 lg:max-w-7xl">
+                                sm:grid-cols-2 sm:overflow-visible sm:max-w-[440px] md:max-w-[720px]
+                                lg:grid-cols-4 lg:max-w-[1400px]">
                     {MENU_ITEMS.map((item) => (
-                        <MenuItem key={item.id} product={item} />
+                        <MenuItem
+                            key={item.id}
+                            product={item}
+                            onClick={() => setSelectedProduct(item)}
+                        />
                     ))}
                 </div>
             </div>
+
+            {/* MODAL DE DETALLES */}
+            {selectedProduct && (
+                <ProductModal
+                    product={selectedProduct}
+                    onClose={() => setSelectedProduct(null)}
+                />
+            )}
         </div>
     );
 }
