@@ -130,7 +130,7 @@ export default function OrdersPage() {
 
                 {loading ? (
                     <div className="text-center py-20 opacity-30">Cargando banquetes...</div>
-                ) : pastOrders.length === 0 && !activeOrder ? (
+                ) : pastOrders.length === 0 && activeOrders.length === 0 ? (
                     <div className="text-center py-20 bg-foreground/5 rounded-3xl border border-dashed border-foreground/10">
                         <p className="text-xl opacity-50 mb-4">Aún no has hecho ningún pedido...</p>
                         <Link href="/">
