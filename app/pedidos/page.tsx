@@ -1,9 +1,10 @@
 'use client';
 
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { createClient } from '@/utils/supabase/client';
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import OrderStatusTracker from '@/components/OrderStatusTracker';
 
 interface OrderItem {
     nombre_producto: string;
@@ -37,6 +38,7 @@ export default function OrdersPage() {
                         items_pedido (*)
                     `)
                     .eq('user_id', user.id)
+                    .neq('estado', 'cancelado') // No mostramos cancelados por ahora
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
@@ -50,7 +52,6 @@ export default function OrdersPage() {
 
         fetchOrders();
 
-        // Suscripción para ver actualizaciones de estado en tiempo real (cocina)
         const channel = supabase
             .channel('user-orders')
             .on(
@@ -65,7 +66,12 @@ export default function OrdersPage() {
         };
     }, [user]);
 
+    // Encontrar el pedido activo más reciente para el Tracker Hero
+    const activeOrder = orders.find(o => o.estado !== 'entregado');
+    const pastOrders = activeOrder ? orders.filter(o => o.id !== activeOrder.id) : orders;
+
     if (!user) {
+        // ... (contenido de no autenticado permanece igual)
         return (
             <div className="min-h-screen flex items-center justify-center p-6 text-center">
                 <div className="max-w-md">
@@ -93,19 +99,30 @@ export default function OrdersPage() {
 
     return (
         <div className="min-h-screen pt-24 pb-12 px-6 max-w-4xl mx-auto">
-            <div className="flex justify-between items-center mb-12">
-                <h1 className="text-5xl md:text-7xl font-[family-name:var(--font-urban-heading)] uppercase tracking-tighter">Mis Pedidos</h1>
+            <header className="flex justify-between items-center mb-12">
+                <h1 className="text-5xl md:text-7xl font-[family-name:var(--font-urban-heading)] uppercase tracking-tighter">Tu Banquete</h1>
                 <Link href="/perfil">
                     <div className="bg-foreground/5 border border-foreground/10 p-3 rounded-xl hover:bg-foreground/10 transition-colors">
                         <span className="text-xs uppercase tracking-widest">Mi Perfil 👤</span>
                     </div>
                 </Link>
-            </div>
+            </header>
+
+            {/* HERO: Status Tracker (Solo si hay pedido activo) */}
+            {activeOrder && (
+                <div className="mb-20">
+                    <OrderStatusTracker status={activeOrder.estado} orderId={activeOrder.id} />
+                </div>
+            )}
 
             <div className="space-y-6">
+                <h2 className="text-2xl font-[family-name:var(--font-urban-heading)] uppercase tracking-widest opacity-30 px-2 italic">
+                    {activeOrder ? 'Historial Reciente' : 'Tus Pedidos'}
+                </h2>
+
                 {loading ? (
                     <div className="text-center py-20 opacity-30">Cargando banquetes...</div>
-                ) : orders.length === 0 ? (
+                ) : pastOrders.length === 0 && !activeOrder ? (
                     <div className="text-center py-20 bg-foreground/5 rounded-3xl border border-dashed border-foreground/10">
                         <p className="text-xl opacity-50 mb-4">Aún no has hecho ningún pedido...</p>
                         <Link href="/">
@@ -115,7 +132,7 @@ export default function OrdersPage() {
                         </Link>
                     </div>
                 ) : (
-                    orders.map((order) => (
+                    pastOrders.map((order) => (
                         <div key={order.id} className="bg-foreground/5 border border-foreground/10 rounded-3xl p-6 md:p-8 hover:border-[#F0C808]/30 transition-all group">
                             <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
                                 <div>

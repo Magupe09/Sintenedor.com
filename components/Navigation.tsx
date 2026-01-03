@@ -1,14 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import { usePathname } from 'next/navigation';
 
 export default function Navigation() {
     const { user, signOut } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
+    const pathname = usePathname();
 
     const toggleMenu = () => setIsOpen(!isOpen);
+
+    // Close menu when navigating (even from outside like CartIcon)
+    useEffect(() => {
+        setIsOpen(false);
+    }, [pathname]);
 
     return (
         <>
@@ -44,7 +51,7 @@ export default function Navigation() {
 
             {/* OVERLAY / TELÓN A PANTALLA COMPLETA */}
             <div
-                className={`fixed inset-0 bg-background z-[55] flex flex-col items-center justify-center transition-all duration-500 ease-in-out overflow-y-auto pt-24 pb-12
+                className={`fixed inset-0 bg-background z-[55] flex flex-col items-center justify-center transition-all duration-500 ease-in-out overflow-hidden pt-24 pb-12
                     ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}
                 `}
             >
@@ -116,13 +123,7 @@ export default function Navigation() {
                     )}
 
 
-                    <Link
-                        href="/carrito"
-                        onClick={toggleMenu}
-                        className="text-4xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-gray-500 hover:text-foreground transition-colors uppercase tracking-tight"
-                    >
-                        Tu Pedido
-                    </Link>
+
                     <Link
                         href="/nosotros"
                         onClick={toggleMenu}

@@ -28,13 +28,13 @@ export default function CartIcon() {
         }
     }, [totalItems]);
 
-    // Crucial: Restore visibility logic
-    if (!mounted || (totalItems === 0 && !isOpen)) return null;
+    if (!mounted) return null;
+    if (totalItems === 0 && !isOpen) return null;
 
     return (
         <Link
             href={isOpen ? '/' : '/carrito'}
-            className={`fixed bottom-6 left-6 z-50 flex items-center justify-center transition-all duration-300 group
+            className={`fixed bottom-6 left-6 z-[70] flex items-center justify-center transition-all duration-300 group
                 ${animate ? 'animate-cart-bounce' : 'hover:scale-110'}
             `}
         >

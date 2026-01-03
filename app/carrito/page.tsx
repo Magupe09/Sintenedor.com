@@ -9,10 +9,25 @@ import Link from 'next/link';
 export default function CartPage() {
     const { cart, removeFromCart, total, clearCart } = useCart();
 
-    // Estados locales para el formulario
+    // Estados locales para el formulario y validaciones
     const [clientName, setClientName] = React.useState('');
     const [clientPhone, setClientPhone] = React.useState('');
     const [isSubmitting, setIsSubmitting] = React.useState(false);
+    const [errors, setErrors] = React.useState({ name: '', phone: '' });
+
+    // Validaciones
+    const validateName = (name: string) => {
+        if (name.length > 0 && name.length < 3) return "El nombre debe tener al menos 3 letras";
+        if (name.length > 0 && !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(name)) return "El nombre solo debe contener letras";
+        return "";
+    };
+
+    const validatePhone = (phone: string) => {
+        const cleanPhone = phone.replace(/\D/g, '');
+        if (phone.length > 0 && cleanPhone.length !== 10) return "El teléfono debe tener 10 dígitos";
+        if (phone.length > 0 && !/^3\d{9}$/.test(cleanPhone)) return "Debe ser un número celular válido (empieza por 3)";
+        return "";
+    };
 
     // Formateador de moneda
     const formatPrice = (amount: number) => {
@@ -28,6 +43,16 @@ export default function CartPage() {
 
     const handleCheckout = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Validación final antes de enviar
+        const nameErr = validateName(clientName);
+        const phoneErr = validatePhone(clientPhone);
+
+        if (nameErr || phoneErr) {
+            setErrors({ name: nameErr, phone: phoneErr });
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
@@ -38,7 +63,7 @@ export default function CartPage() {
                     user_id: user?.id || null,
                     total: total,
                     nombre_cliente: clientName,
-                    telefono_cliente: clientPhone,
+                    telefono_cliente: clientPhone.replace(/\D/g, ''), // Guardamos solo números
                     estado: 'pendiente'
                 })
                 .select()
@@ -146,28 +171,37 @@ export default function CartPage() {
                             <input
                                 type="text"
                                 required
-                                className="w-full bg-background border border-foreground/10 rounded-xl p-3 text-sm text-foreground focus:outline-none focus:border-urban-red transition-colors"
+                                className={`w-full bg-background border rounded-xl p-3 text-sm text-foreground focus:outline-none transition-colors ${errors.name ? 'border-urban-red' : 'border-foreground/10 focus:border-urban-red'}`}
                                 value={clientName}
-                                onChange={(e) => setClientName(e.target.value)}
+                                onChange={(e) => {
+                                    setClientName(e.target.value);
+                                    setErrors(prev => ({ ...prev, name: validateName(e.target.value) }));
+                                }}
                                 placeholder="Pide a nombre de..."
                             />
+                            {errors.name && <p className="text-[10px] text-urban-red mt-1 font-bold uppercase tracking-widest">{errors.name}</p>}
                         </div>
                         <div>
                             <label className="block text-[10px] uppercase tracking-widest opacity-60 mb-2 font-bold">Teléfono</label>
                             <input
                                 type="tel"
                                 required
-                                className="w-full bg-background border border-foreground/10 rounded-xl p-3 text-sm text-foreground focus:outline-none focus:border-urban-red transition-colors"
+                                className={`w-full bg-background border rounded-xl p-3 text-sm text-foreground focus:outline-none transition-colors ${errors.phone ? 'border-urban-red' : 'border-foreground/10 focus:border-urban-red'}`}
                                 value={clientPhone}
-                                onChange={(e) => setClientPhone(e.target.value)}
-                                placeholder="Tu celular de contacto"
+                                onChange={(e) => {
+                                    const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                                    setClientPhone(val);
+                                    setErrors(prev => ({ ...prev, phone: validatePhone(val) }));
+                                }}
+                                placeholder="Tu celular (10 dígitos)"
                             />
+                            {errors.phone && <p className="text-[10px] text-urban-red mt-1 font-bold uppercase tracking-widest">{errors.phone}</p>}
                         </div>
 
                         <button
                             type="submit"
-                            disabled={isSubmitting}
-                            className="w-full bg-foreground text-background py-4 rounded-full font-bold uppercase tracking-widest hover:bg-urban-yellow hover:text-black transition-all disabled:bg-gray-400 mt-2"
+                            disabled={isSubmitting || !!errors.name || !!errors.phone || !clientName || !clientPhone}
+                            className="w-full bg-foreground text-background py-4 rounded-full font-bold uppercase tracking-widest hover:bg-urban-yellow hover:text-black transition-all disabled:bg-gray-400/20 disabled:text-gray-500 mt-2"
                         >
                             {isSubmitting ? 'Enviando...' : 'Confirmar Pedido'}
                         </button>
