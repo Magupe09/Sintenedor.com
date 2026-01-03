@@ -24,8 +24,15 @@ DROP POLICY IF EXISTS "Usuarios pueden ver sus propios pedidos" ON public.pedido
 DROP POLICY IF EXISTS "Usuarios pueden insertar sus propios pedidos" ON public.pedidos;
 DROP POLICY IF EXISTS "Permitir lectura para gestión de cocina" ON public.pedidos;
 DROP POLICY IF EXISTS "Permitir actualizar estados de pedidos" ON public.pedidos;
+DROP POLICY IF EXISTS "usuarios_autenticados_select_pedidos" ON public.pedidos;
+DROP POLICY IF EXISTS "usuarios_anonimos_select_pedidos" ON public.pedidos;
+DROP POLICY IF EXISTS "todos_insert_pedidos" ON public.pedidos;
+DROP POLICY IF EXISTS "cocina_select_pedidos" ON public.pedidos;
+DROP POLICY IF EXISTS "cocina_update_pedidos" ON public.pedidos;
 DROP POLICY IF EXISTS "Permitir inserción de usuarios anónimos" ON public.usuarios_anonimos;
 DROP POLICY IF EXISTS "Permitir lectura de usuarios anónimos por código de seguimiento" ON public.usuarios_anonimos;
+DROP POLICY IF EXISTS "todos_insert_usuarios_anonimos" ON public.usuarios_anonimos;
+DROP POLICY IF EXISTS "todos_select_usuarios_anonimos" ON public.usuarios_anonimos;
 
 -- 4. Asegurar que RLS esté habilitado
 ALTER TABLE public.pedidos ENABLE ROW LEVEL SECURITY;
@@ -33,27 +40,30 @@ ALTER TABLE public.items_pedido ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.usuarios_anonimos ENABLE ROW LEVEL SECURITY;
 
 -- 5. Crear políticas ACTUALIZADAS para pedidos
+-- Política para usuarios autenticados normales (solo sus pedidos)
 CREATE POLICY "usuarios_autenticados_select_pedidos"
 ON public.pedidos FOR SELECT
-USING (auth.uid() = user_id);
+USING (auth.uid() = user_id AND auth.jwt() ->> 'email' != 'maonvacation@gmail.com');
 
+-- Política para usuarios anónimos
 CREATE POLICY "usuarios_anonimos_select_pedidos"
 ON public.pedidos FOR SELECT
 USING (codigo_seguimiento IS NOT NULL AND auth.uid() IS NULL);
 
+-- Política para admins (pueden ver todos los pedidos)
+CREATE POLICY "admin_select_pedidos"
+ON public.pedidos FOR SELECT
+USING (auth.jwt() ->> 'email' = 'maonvacation@gmail.com');
+
+-- Insert para todos
 CREATE POLICY "todos_insert_pedidos"
 ON public.pedidos FOR INSERT
 WITH CHECK (true);
 
-CREATE POLICY "cocina_select_pedidos"
-ON public.pedidos FOR SELECT
-TO authenticated
-USING (true);
-
-CREATE POLICY "cocina_update_pedidos"
+-- Update para admins
+CREATE POLICY "admin_update_pedidos"
 ON public.pedidos FOR UPDATE
-TO authenticated
-USING (true);
+USING (auth.jwt() ->> 'email' = 'maonvacation@gmail.com');
 
 -- 6. Crear políticas para usuarios_anonimos
 CREATE POLICY "todos_insert_usuarios_anonimos"
@@ -83,7 +93,7 @@ ON public.items_pedido FOR INSERT
 WITH CHECK (true);
 
 -- 8. Verificar políticas creadas
-SELECT schemaname, tablename, policyname
+SELECT schemaname, tablename, policyname, permissive, roles, cmd, qual
 FROM pg_policies
 WHERE schemaname = 'public'
 AND tablename IN ('pedidos', 'items_pedido', 'usuarios_anonimos')
