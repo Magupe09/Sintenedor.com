@@ -103,6 +103,14 @@ export default function Navigation() {
                         Inicio
                     </Link>
 
+                    <Link
+                        href="/track"
+                        onClick={toggleMenu}
+                        className="text-4xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-urban-yellow hover:text-foreground transition-colors uppercase tracking-tight"
+                    >
+                        Pedidos Activos
+                    </Link>
+
                     {user && (
                         <>
                             <Link

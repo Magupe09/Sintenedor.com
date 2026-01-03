@@ -66,9 +66,9 @@ export default function OrdersPage() {
         };
     }, [user]);
 
-    // Encontrar el pedido activo más reciente para el Tracker Hero
-    const activeOrder = orders.find(o => o.estado !== 'entregado');
-    const pastOrders = activeOrder ? orders.filter(o => o.id !== activeOrder.id) : orders;
+    // Encontrar TODOS los pedidos activos (no entregados)
+    const activeOrders = orders.filter(o => o.estado !== 'entregado');
+    const pastOrders = orders.filter(o => o.estado === 'entregado');
 
     if (!user) {
         // ... (contenido de no autenticado permanece igual)
@@ -108,16 +108,24 @@ export default function OrdersPage() {
                 </Link>
             </header>
 
-            {/* HERO: Status Tracker (Solo si hay pedido activo) */}
-            {activeOrder && (
+            {/* HERO: Status Trackers para TODOS los pedidos activos */}
+            {activeOrders.length > 0 && (
                 <div className="mb-20">
-                    <OrderStatusTracker status={activeOrder.estado} orderId={activeOrder.id} />
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {activeOrders.map((order) => (
+                            <OrderStatusTracker
+                                key={order.id}
+                                status={order.estado}
+                                orderId={order.id}
+                            />
+                        ))}
+                    </div>
                 </div>
             )}
 
             <div className="space-y-6">
                 <h2 className="text-2xl font-[family-name:var(--font-urban-heading)] uppercase tracking-widest opacity-30 px-2 italic">
-                    {activeOrder ? 'Historial Reciente' : 'Tus Pedidos'}
+                    {activeOrders.length > 0 ? 'Historial Reciente' : 'Tus Pedidos'}
                 </h2>
 
                 {loading ? (

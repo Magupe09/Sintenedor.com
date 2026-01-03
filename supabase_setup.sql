@@ -1,9 +1,11 @@
 -- Migración para la creación de tablas de pedidos en Supabase
 
--- 1. Crear tabla de Pedidos
+-- Crear tabla de Pedidos
 CREATE TABLE IF NOT EXISTS public.pedidos (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    usuario_anonimo_id UUID REFERENCES public.usuarios_anonimos(id) ON DELETE SET NULL,
+    codigo_seguimiento TEXT UNIQUE, -- para pedidos anónimos (mismo que el del usuario anónimo)
     total NUMERIC NOT NULL,
     estado TEXT NOT NULL DEFAULT 'pendiente', -- pendiente, preparando, listo, entregado, cancelado
     nombre_cliente TEXT NOT NULL,
@@ -11,7 +13,19 @@ CREATE TABLE IF NOT EXISTS public.pedidos (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- 2. Crear tabla de Items de Pedido
+-- 2. Crear tabla de Usuarios Anónimos
+CREATE TABLE IF NOT EXISTS public.usuarios_anonimos (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nombre TEXT NOT NULL,
+    telefono TEXT NOT NULL,
+    email TEXT, -- opcional para marketing futuro
+    codigo_seguimiento TEXT UNIQUE NOT NULL, -- código único para tracking público
+    acepta_marketing BOOLEAN DEFAULT false,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 3. Crear tabla de Items de Pedido
 CREATE TABLE IF NOT EXISTS public.items_pedido (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     pedido_id UUID REFERENCES public.pedidos(id) ON DELETE CASCADE,
@@ -22,11 +36,10 @@ CREATE TABLE IF NOT EXISTS public.items_pedido (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- 3. Habilitar RLS (Row Level Security)
-ALTER TABLE public.pedidos ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.items_pedido ENABLE ROW LEVEL SECURITY;
+-- 4. Habilitar RLS (Row Level Security)
+ALTER TABLE public.usuarios_anonimos ENABLE ROW LEVEL SECURITY;
 
--- 4. Políticas de Acceso (RLS)
+-- 5. Políticas de Acceso (RLS)
 
 -- Los usuarios pueden ver sus propios pedidos
 CREATE POLICY "Usuarios pueden ver sus propios pedidos" 
@@ -56,16 +69,47 @@ CREATE POLICY "Usuarios pueden ver items de sus pedidos"
 ON public.items_pedido FOR SELECT 
 USING (
     EXISTS (
-        SELECT 1 FROM public.pedidos 
-        WHERE pedidos.id = items_pedido.pedido_id 
-        AND (pedidos.user_id = auth.uid() OR auth.uid() IS NOT NULL)
+        SELECT 1 FROM public.pedidos
+        WHERE pedidos.id = items_pedido.pedido_id
+        AND (
+            pedidos.user_id = auth.uid() OR
+            (pedidos.usuario_anonimo_id IS NOT NULL AND auth.uid() IS NULL)
+        )
     )
 );
 
-CREATE POLICY "Usuarios pueden insertar items" 
-ON public.items_pedido FOR INSERT 
+CREATE POLICY "Usuarios pueden insertar items"
+ON public.items_pedido FOR INSERT
 WITH CHECK (true);
--- 5. Habilitar Realtime para las tablas (Esto es vital para la cocina)
+
+-- 6. Habilitar Realtime para las tablas (Esto es vital para la cocina y tracking)
 -- Esto permite que los cambios en la DB se notifiquen instantáneamente a la app.
 ALTER PUBLICATION supabase_realtime ADD TABLE pedidos;
 ALTER PUBLICATION supabase_realtime ADD TABLE items_pedido;
+ALTER PUBLICATION supabase_realtime ADD TABLE usuarios_anonimos;
+
+-- Función para generar códigos de seguimiento únicos
+CREATE OR REPLACE FUNCTION generate_tracking_code()
+RETURNS TEXT AS $$
+DECLARE
+    code TEXT;
+    exists_count INTEGER;
+BEGIN
+    LOOP
+        -- Generar código de 6 caracteres alfanumérico
+        code := UPPER(SUBSTRING(MD5(RANDOM()::TEXT) FROM 1 FOR 6));
+
+        -- Verificar si ya existe
+        SELECT COUNT(*) INTO exists_count
+        FROM usuarios_anonimos
+        WHERE codigo_seguimiento = code;
+
+        -- Si no existe, salir del loop
+        IF exists_count = 0 THEN
+            EXIT;
+        END IF;
+    END LOOP;
+
+    RETURN code;
+END;
+$$ LANGUAGE plpgsql;
