@@ -84,7 +84,8 @@ export default function CartPage() {
 
         } catch (error: any) {
             console.error("Error al procesar el pedido:", error);
-            alert("Uups, el motor de pedidos falló. Inténtalo de nuevo o llámanos.");
+            const errorMsg = error.message || "Error desconocido";
+            alert(`Uups, el motor de pedidos falló: ${errorMsg}. Inténtalo de nuevo o llámanos.`);
         } finally {
             setIsSubmitting(false);
         }

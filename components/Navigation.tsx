@@ -115,19 +115,20 @@ export default function Navigation() {
                         </>
                     )}
 
-                    <Link
-                        href="/" // Por ahora va al home, luego a /menu
-                        onClick={toggleMenu}
-                        className="text-4xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-foreground hover:text-[#DD1C1A] transition-colors uppercase tracking-tight"
-                    >
-                        Menú Completo
-                    </Link>
+
                     <Link
                         href="/carrito"
                         onClick={toggleMenu}
                         className="text-4xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-gray-500 hover:text-foreground transition-colors uppercase tracking-tight"
                     >
                         Tu Pedido
+                    </Link>
+                    <Link
+                        href="/nosotros"
+                        onClick={toggleMenu}
+                        className="text-4xl md:text-7xl font-[family-name:var(--font-urban-heading)] text-foreground hover:text-urban-yellow transition-colors uppercase tracking-tight"
+                    >
+                        Nosotros
                     </Link>
 
                     {/* Admin Link - Solo visible para admin */}

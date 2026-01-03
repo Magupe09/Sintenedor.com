@@ -105,13 +105,13 @@ export default function KitchenPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#050505] text-foreground p-6 pt-24 md:p-12 lg:p-20">
+        <div className="min-h-screen bg-[#050505] text-white p-6 pt-24 md:p-12 lg:p-20">
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-16">
-                <div>
+                <div className="text-white">
                     <h1 className="text-6xl md:text-8xl font-[family-name:var(--font-urban-heading)] uppercase tracking-tighter leading-none mb-2">
                         Cocina <span className="text-urban-yellow">Sintenedor</span>
                     </h1>
-                    <p className="text-sm uppercase tracking-widest opacity-50 font-bold">
+                    <p className="text-sm uppercase tracking-widest opacity-80 font-bold">
                         Panel de Control de Banquetes • Tiempo Real
                     </p>
                 </div>
@@ -143,10 +143,10 @@ export default function KitchenPage() {
 
                                 <div className="p-8 flex-1 flex flex-col">
                                     <div className="mb-6">
-                                        <h3 className="text-3xl font-[family-name:var(--font-urban-heading)] uppercase leading-none mb-1">
+                                        <h3 className="text-3xl font-[family-name:var(--font-urban-heading)] uppercase leading-none mb-1 text-white">
                                             {order.nombre_cliente}
                                         </h3>
-                                        <p className="text-xs opacity-50 font-mono">
+                                        <p className="text-xs opacity-70 font-mono text-white">
                                             {new Date(order.created_at).toLocaleTimeString()}
                                         </p>
                                     </div>
@@ -154,7 +154,7 @@ export default function KitchenPage() {
                                     {/* Items List */}
                                     <div className="flex-1 space-y-4 mb-8">
                                         {order.items_pedido?.map((item) => (
-                                            <div key={item.id} className="flex justify-between items-start gap-4 pb-4 border-b border-foreground/5 last:border-0">
+                                            <div key={item.id} className="flex justify-between items-start gap-4 pb-4 border-b border-white/10 last:border-0 text-white">
                                                 <div className="flex-1">
                                                     <p className="text-lg font-bold leading-tight uppercase">
                                                         <span className="text-urban-yellow mr-2">{item.cantidad}x</span>
@@ -217,9 +217,9 @@ export default function KitchenPage() {
                                 </div>
 
                                 {/* Cliente Info Hover */}
-                                <div className="p-4 bg-foreground/5 text-center">
-                                    <p className="text-[10px] uppercase opacity-40 font-bold mb-1">Contacto Directo</p>
-                                    <p className="text-sm font-mono text-urban-yellow">{order.telefono_cliente}</p>
+                                <div className="p-4 bg-white/5 text-center">
+                                    <p className="text-[10px] uppercase opacity-60 font-bold mb-1 text-white tracking-widest">Contacto Directo</p>
+                                    <p className="text-sm font-mono text-urban-yellow font-bold">{order.telefono_cliente}</p>
                                 </div>
                             </div>
                         ))
