@@ -43,6 +43,27 @@ export default function CartPage() {
     const { user } = useAuth();
     const supabase = createClient();
 
+    // Pre-llenar campos con datos del usuario autenticado
+    React.useEffect(() => {
+        if (user?.user_metadata) {
+            const metadata = user.user_metadata;
+            console.log('📋 Metadatos del usuario autenticado:', metadata);
+
+            // Los metadatos pueden venir de diferentes proveedores
+            const fullName = metadata.full_name || metadata.name || metadata.display_name;
+            const phone = metadata.phone || metadata.phone_number;
+
+            if (fullName && !clientName) {
+                setClientName(fullName);
+                console.log('✅ Pre-llenando nombre:', fullName);
+            }
+            if (phone && !clientPhone) {
+                setClientPhone(phone);
+                console.log('✅ Pre-llenando teléfono:', phone);
+            }
+        }
+    }, [user]);
+
     const handleCheckout = async (e: React.FormEvent) => {
         e.preventDefault();
 

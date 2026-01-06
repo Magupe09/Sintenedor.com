@@ -88,12 +88,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     const signInWithGoogle = async () => {
-        const { error } = await supabase.auth.signInWithOAuth({
+        console.log('🔐 GOOGLE LOGIN: Iniciando proceso...');
+        console.log('🔗 Redirect URL:', `${window.location.origin}/auth/callback`);
+
+        const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
                 redirectTo: `${window.location.origin}/auth/callback`,
             },
         });
+
+        console.log('📊 GOOGLE LOGIN: Respuesta de Supabase:', { data, error });
+
+        if (error) {
+            console.error('❌ GOOGLE LOGIN: Error en signInWithOAuth:', error);
+        } else {
+            console.log('✅ GOOGLE LOGIN: Redireccionando a Google...');
+        }
+
         return { error };
     };
 

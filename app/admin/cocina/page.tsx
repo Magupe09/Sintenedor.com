@@ -29,24 +29,19 @@ export default function KitchenPage() {
 
     const fetchOrders = async () => {
         try {
-            // Buscamos pedidos de HOY
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
             const { data, error } = await supabase
                 .from('pedidos')
                 .select(`
                     *,
                     items_pedido (*)
                 `)
-                .gte('created_at', today.toISOString())
                 .neq('estado', 'cancelado')
                 .order('created_at', { ascending: true });
 
             if (error) throw error;
             setOrders(data || []);
         } catch (error) {
-            console.error('Error fetching orders:', error);
+            console.error('💥 Error fetching orders:', error);
         } finally {
             setLoading(false);
         }

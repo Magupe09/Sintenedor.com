@@ -55,13 +55,18 @@ export default function LoginPage() {
                         type="button"
                         disabled={loading}
                         onClick={async () => {
+                            console.log('🚀 LOGIN PAGE: Click en Google button');
                             setLoading(true);
                             const { error } = await signInWithGoogle();
                             if (error) {
+                                console.error('❌ LOGIN PAGE: Error en signInWithGoogle:', error);
                                 alert("Error al intentar conectar con Google: " + error.message);
                                 setLoading(false);
+                            } else {
+                                console.log('⏳ LOGIN PAGE: Esperando redirección a Google...');
+                                // Si no hay error, la redirección de Supabase ocurrirá automáticamente
+                                // El loading se mantendrá hasta que se complete la redirección
                             }
-                            // Si no hay error, la redirección de Supabase ocurrirá automáticamente
                         }}
                         className="w-full bg-foreground text-background font-bold py-4 rounded-full flex items-center justify-center gap-3 hover:opacity-90 transition-all disabled:opacity-50"
                     >
